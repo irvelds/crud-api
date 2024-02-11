@@ -1,9 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { METHODS, STATUS_CODE, RESPONSE_MESSAGES, ENDPOINT } from './constants';
-import { IUser } from './types'
+import { IUser } from './types';
 import { getUser } from './api/getUser';
 import { getAllUsers } from './api/getAllUser';
+import { deleteUser } from './api/deleteUser';
 import { createUser } from './api/postUser';
+import { putUser } from './api/putUser';
 import { sendMessageResponse } from './utilities';
 import { usersState, updateUsersState } from './state';
 
@@ -22,8 +24,8 @@ export const router = async (
     if (req.url) {
         parseId = req.url.replace(`${ENDPOINT}`, '');
         parseId = parseId.length > 1 ? parseId.slice(1) : null;
-        console.log(parseId)
     }
+
     try {
         updateUsersState(usersState);
         if (req.url && !req.url.startsWith(ENDPOINT)) {
@@ -32,11 +34,11 @@ export const router = async (
         }
         switch (req.method) {
             case METHODS.GET:
-                if (parseId) {
-                    await getUser(res, parseId);
-                } else {
-                    await getAllUsers(res);
-                }
+                    if (parseId) {
+                        await getUser(req, res, parseId);
+                    } else {
+                        await getAllUsers(req, res);
+                    }
                 break;
             case METHODS.POST:
                 if (parseId || (req.url !== ENDPOINT && req.url !== `${ENDPOINT}\/`)) {
@@ -47,6 +49,28 @@ export const router = async (
                     );
                 } else {
                     await createUser(req, res);
+                }
+                break;
+            case METHODS.DELETE:
+                if (parseId) {
+                    await deleteUser(res, parseId);
+                } else {
+                    sendMessageResponse(
+                        res,
+                        STATUS_CODE.NOT_FOUND,
+                        RESPONSE_MESSAGES.ENDPOINT_ERROR,
+                    );
+                }
+                break;
+            case METHODS.PUT:
+                if (parseId) {
+                    await putUser(req, res, parseId);
+                } else {
+                    sendMessageResponse(
+                        res,
+                        STATUS_CODE.NOT_FOUND,
+                        RESPONSE_MESSAGES.ENDPOINT_ERROR,
+                    );
                 }
                 break;
             default:
