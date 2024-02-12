@@ -9,7 +9,7 @@ import { putUser } from './api/putUser';
 import { sendMessageResponse } from './utilities';
 import { usersState, updateUsersState } from './state';
 import cluster from 'cluster';
-
+/* eslint-disable no-useless-escape */
 export const handler = async (req: IncomingMessage, res: ServerResponse) => {
     if (cluster.isWorker) {
         await balancer(req, res);
@@ -43,7 +43,7 @@ export const router = async (
     try {
         updateUsersState(usersState);
         if (req.url && !req.url.startsWith(ENDPOINT)) {
-            sendMessageResponse(res, STATUS_CODE.NOT_FOUND, RESPONSE_MESSAGES.ENDPOINT_ERROR);
+            sendMessageResponse(res, STATUS_CODE.NOT_FOUND_404, RESPONSE_MESSAGES.ENDPOINT_ERROR);
             return;
         }
         switch (req.method) {
@@ -58,7 +58,7 @@ export const router = async (
                 if (parseId || (req.url !== ENDPOINT && req.url !== `${ENDPOINT}\/`)) {
                     sendMessageResponse(
                         res,
-                        STATUS_CODE.NOT_FOUND,
+                        STATUS_CODE.NOT_FOUND_404,
                         RESPONSE_MESSAGES.ENDPOINT_ERROR,
                     );
                 } else {
@@ -71,7 +71,7 @@ export const router = async (
                 } else {
                     sendMessageResponse(
                         res,
-                        STATUS_CODE.NOT_FOUND,
+                        STATUS_CODE.NOT_FOUND_404,
                         RESPONSE_MESSAGES.ENDPOINT_ERROR,
                     );
                 }
@@ -82,7 +82,7 @@ export const router = async (
                 } else {
                     sendMessageResponse(
                         res,
-                        STATUS_CODE.NOT_FOUND,
+                        STATUS_CODE.NOT_FOUND_404,
                         RESPONSE_MESSAGES.ENDPOINT_ERROR,
                     );
                 }

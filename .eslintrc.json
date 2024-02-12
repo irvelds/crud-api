@@ -4,6 +4,17 @@
     "es6": true,
     "node": true
   },
+  "overrides": [
+    {
+      "files": [
+        "**/*.spec.ts",
+        "**/*.spec.jsx"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ],
   "settings": {
     "import/resolver": {
       "node": {

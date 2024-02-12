@@ -1,6 +1,6 @@
 
 import { IncomingMessage, ServerResponse } from 'http';
-import { RESPONSE_MESSAGES, STATUS_CODE, ENDPOINT } from './constants';
+import { RESPONSE_MESSAGES, STATUS_CODE } from './constants';
 import { IUser } from './types';
 import { validate as uuidValid, version as uuidVersion } from 'uuid';
 import { usersState } from './state';
@@ -39,7 +39,7 @@ export const validUserId = async (req: IncomingMessage, res: ServerResponse, id:
             return false;
         }
         if (!isExistUser(id)) {
-            sendMessageResponse(res, STATUS_CODE.NOT_FOUND, RESPONSE_MESSAGES.NOT_USER_ID);
+            sendMessageResponse(res, STATUS_CODE.NOT_FOUND_404, RESPONSE_MESSAGES.NOT_USER_ID);
             return false;
         }
     } catch {
