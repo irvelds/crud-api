@@ -1,4 +1,4 @@
-import { ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse } from 'http';
 import { RESPONSE_MESSAGES, STATUS_CODE } from '../constants';
 import { sendMethodResponse, sendMessageResponse, validUserId } from '../utilities';
 import { IUser } from '../types'
@@ -11,9 +11,9 @@ const deleteUserByID = async (id: string) => {
     return user;
 };
 
-export const deleteUser = async (res: ServerResponse, id: string): Promise<void> => {
+export const deleteUser = async (req: IncomingMessage, res: ServerResponse, id: string): Promise<void> => {
     try {
-        const isId = await validUserId(res, id);
+        const isId = await validUserId(req, res, id);
         if (isId) {
             const user = await deleteUserByID(id);
             sendMethodResponse(res, STATUS_CODE.DELETE_OK, user);

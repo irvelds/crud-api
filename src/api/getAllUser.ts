@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { STATUS_CODE, RESPONSE_MESSAGES } from '../constants';
+import { STATUS_CODE, RESPONSE_MESSAGES, ENDPOINT } from '../constants';
 import { sendMethodResponse, sendMessageResponse } from '../utilities';
 import { usersState } from '../state';
 

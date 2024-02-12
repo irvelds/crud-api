@@ -15,7 +15,7 @@ const putByID = (id: string, user: IUser) => {
 
 export const putUser = async (req: IncomingMessage, res: ServerResponse, id: string) => {
     try {
-        const resultId = await validUserId(res, id);
+        const resultId = await validUserId(req, res, id);
         if (resultId) {
             const userData = await parseBody(req, res);
             const validData = await validUserData(res, userData);

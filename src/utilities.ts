@@ -1,6 +1,6 @@
 
 import { IncomingMessage, ServerResponse } from 'http';
-import { RESPONSE_MESSAGES, STATUS_CODE } from './constants';
+import { RESPONSE_MESSAGES, STATUS_CODE, ENDPOINT } from './constants';
 import { IUser } from './types';
 import { validate as uuidValid, version as uuidVersion } from 'uuid';
 import { usersState } from './state';
@@ -21,7 +21,7 @@ export const sendMessageResponse = (
     message: string,
 ): void => {
     res.writeHead(statusCode, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ code: statusCode, message}));
+    res.end(JSON.stringify({ code: statusCode, message }));
 };
 
 
@@ -30,7 +30,9 @@ export const isExistUser = (id: string): IUser | null => {
     return userId ? userId : null;
 };
 
-export const validUserId = async (res: ServerResponse, id: string) => {
+
+
+export const validUserId = async (req: IncomingMessage, res: ServerResponse, id: string) => {
     try {
         if (!(uuidValid(id) && uuidVersion(id) === 4)) {
             sendMessageResponse(res, STATUS_CODE.BAD_REQUEST, RESPONSE_MESSAGES.NOT_UUID);

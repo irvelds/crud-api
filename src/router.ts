@@ -8,9 +8,22 @@ import { createUser } from './api/postUser';
 import { putUser } from './api/putUser';
 import { sendMessageResponse } from './utilities';
 import { usersState, updateUsersState } from './state';
+import cluster from 'cluster';
 
 export const handler = async (req: IncomingMessage, res: ServerResponse) => {
-    await router(req, res, usersState);
+    if (cluster.isWorker) {
+        await balancer(req, res);
+    } else {
+        await router(req, res, usersState);
+    }
+};
+
+export const balancer = async (req: IncomingMessage, res: ServerResponse) => {
+    process.send!({ action: 'get' });
+    process.once('message', async (user: IUser[]) => {
+        const usersData = await router(req, res, user);
+        process.send!({ action: 'send', usersData: usersData });
+    });
 };
 
 export const router = async (
@@ -20,11 +33,12 @@ export const router = async (
 ): Promise<IUser[] | undefined> => {
     res.setHeader('Content-Type', 'application/json');
     let parseId: string | null = null;
-
     if (req.url) {
         parseId = req.url.replace(`${ENDPOINT}`, '');
         parseId = parseId.length > 1 ? parseId.slice(1) : null;
     }
+
+  
 
     try {
         updateUsersState(usersState);
@@ -34,11 +48,11 @@ export const router = async (
         }
         switch (req.method) {
             case METHODS.GET:
-                    if (parseId) {
-                        await getUser(req, res, parseId);
-                    } else {
-                        await getAllUsers(req, res);
-                    }
+                if (parseId && req.url!.startsWith(`${ENDPOINT}\/`)) {
+                    await getUser(req, res, parseId);
+                } else  {
+                    await getAllUsers(req, res);
+                }
                 break;
             case METHODS.POST:
                 if (parseId || (req.url !== ENDPOINT && req.url !== `${ENDPOINT}\/`)) {
@@ -52,8 +66,8 @@ export const router = async (
                 }
                 break;
             case METHODS.DELETE:
-                if (parseId) {
-                    await deleteUser(res, parseId);
+                if (parseId && req.url!.startsWith(`${ENDPOINT}\/`)) {
+                    await deleteUser(req, res, parseId);
                 } else {
                     sendMessageResponse(
                         res,
@@ -63,7 +77,7 @@ export const router = async (
                 }
                 break;
             case METHODS.PUT:
-                if (parseId) {
+                if (parseId && req.url!.startsWith(`${ENDPOINT}\/`)) {
                     await putUser(req, res, parseId);
                 } else {
                     sendMessageResponse(
@@ -81,3 +95,5 @@ export const router = async (
     }
     return usersState;
 };
+
+

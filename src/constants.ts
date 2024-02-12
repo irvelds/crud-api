@@ -1,3 +1,4 @@
+
 export const STATUS_CODE = {
     OK: 200,
     CREATE_OK: 201,
@@ -5,9 +6,13 @@ export const STATUS_CODE = {
     BAD_REQUEST: 400,
     NOT_FOUND: 404,
     INTERNAL_SERVER_ERROR: 500,
-    Not_Implemented: 501,
+    NOT_IMPLEMENTED: 501,
 };
-
+export const STATUS_TYPE = {
+    SERVER: 'The server started on the port',
+    PRIMARY: 'Load Balancer is running on port',
+    WORKER: 'The worker started on the por',
+};
 
 export const METHODS = {
     GET: 'GET',

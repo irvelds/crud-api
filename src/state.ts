@@ -1,4 +1,4 @@
-import { IUser } from './types.js';
+import { IUser } from './types';
 
 export let usersState: IUser[] = [];
 

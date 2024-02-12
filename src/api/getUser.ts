@@ -4,7 +4,7 @@ import { sendMethodResponse, sendMessageResponse, validUserId } from '../utiliti
 import {usersState} from '../state'
 export const getUser = async (req: IncomingMessage, res: ServerResponse, id: string): Promise<void> => {
     try {
-        const isId = await validUserId(res, id);
+        const isId = await validUserId(req, res, id);
         if (isId) {
             const user = usersState.find((user) => user.id === id);
             sendMethodResponse(res, STATUS_CODE.OK, user);

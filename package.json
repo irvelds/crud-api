@@ -8,6 +8,7 @@
     "fix": "eslint . --ext .ts --fix",
     "start:dev": "nodemon",
     "start:prod": "webpack --mode=production --node-env=production && node dist/main.js",
+    "start:multi": "nodemon --exec npx ts-node src/multi.ts",
     "prettier": "prettier --write src/**/*.ts",
     "test": "jest --runInBand --detectOpenHandles --forceExit"
   },
